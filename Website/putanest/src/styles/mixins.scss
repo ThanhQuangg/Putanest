@@ -1,0 +1,18 @@
+@mixin center-flex($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin text-style($size: 1rem, $weight: 400, $color: $text-color) {
+  font-size: $size;
+  font-weight: $weight;
+  color: $color;
+}
+
+@mixin card-style($bg: $light-bg-color, $radius: $border-radius) {
+  background-color: $bg;
+  border-radius: $radius;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
