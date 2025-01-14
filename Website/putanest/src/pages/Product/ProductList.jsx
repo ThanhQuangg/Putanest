@@ -43,7 +43,7 @@ const ProductList = () => {
                             <h5>{product.productName}</h5>
                             <p>Price: {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                             {/* <button onClick={() => handleProductClick(product.productId)}>Xem chi tiết</button>                             */}
-                            <button style={{marginLeft:"10px"}}>Thêm vào giỏ hàng</button>
+                            {/* <button style={{marginLeft:"10px"}}>Thêm vào giỏ hàng</button> */}
                         </div>
                     ))}
                 </div>

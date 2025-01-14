@@ -76,7 +76,7 @@ const HomePage = () => {
                   <h5>{product.productName}</h5>
                   {/* <p>{product.description}</p> */}
                   <p>Giá: {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                  <button>Thêm vào giở hàng</button>
+                  {/* <button>Thêm vào giở hàng</button> */}
                 </div>
               ))}
             </div>

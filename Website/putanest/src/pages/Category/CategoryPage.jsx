@@ -50,7 +50,7 @@ const CategoryPage = () => {
                 <h3>{product.productName}</h3>
                 <p className="product-price">Giá: {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                 {/* <button onClick={() => handleProductClick(product.productId)}>Xem chi tiết</button> */}
-                <button style={{ marginLeft: "10px" }}>Thêm vào giỏ hàng</button>
+                {/* <button style={{ marginLeft: "10px" }}>Thêm vào giỏ hàng</button> */}
                 {/* <p className="product-description">Chi tiết sản phẩm: {product.description}</p>
                 <p>Giá: {product.price} VND</p> */} 
 

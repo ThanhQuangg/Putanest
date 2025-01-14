@@ -27,7 +27,7 @@ const SearchResultsPage = () => {
                 <img src={product.avatar} alt={product.name} />
                 <h5>{product.productName}</h5>
                 <p>Giá: {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                <button style={{ marginLeft: "10px" }}>Thêm vào giỏ hàng</button>
+                {/* <button style={{ marginLeft: "10px" }}>Thêm vào giỏ hàng</button> */}
               </div>
             ))}
           </div>
