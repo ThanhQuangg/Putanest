@@ -1,5 +1,0 @@
-[phases]
-  [phases.build]
-    cmds = ["docker build -t myapp -f putanest/Dockerfile ."]
-  [phases.start]
-    cmds = ["docker run -p 3000:3000 myapp"]
