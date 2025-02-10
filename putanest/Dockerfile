@@ -20,4 +20,4 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Cấu hình start command để chạy ứng dụng
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "putanest-0.0.1-SNAPSHOT.jar"]
