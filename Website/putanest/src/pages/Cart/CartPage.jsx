@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCartByUserId } from "../../features/cart/cartSlice";
-import { fetchCartDetailsByCartId, fetchTotalPrice } from "../../features/cart/cartDetailsSlice";
+import {
+  fetchCartDetailsByCartId,
+  fetchTotalPrice,
+} from "../../features/cart/cartDetailsSlice";
 import { createNewOrder } from "../../features/orders/orderSlice";
 import { removeCartDetail } from "../../features/cart/cartDetailsSlice";
 import "../../styles/Carts.scss";
-import MainLayout from '../../layouts/MainLayout';
-import payment from '../../assets/image/avatar.png';
+import MainLayout from "../../layouts/MainLayout";
+import payment from "../../assets/image/avatar.png";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -24,7 +27,7 @@ const CartPage = () => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decodedToken = JSON.parse(atob(token.split('.')[1])); // Giải mã token
+        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Giải mã token
         const userId = decodedToken?.userId;
 
         if (userId) {
@@ -86,20 +89,21 @@ const CartPage = () => {
   const handleConfirmPayment = async () => {
     const orderRequest = {
       userId: currentUser,
-      orderDetails: cartDetails.map(detail => ({
+      orderDetails: cartDetails.map((detail) => ({
         productId: detail.productId,
         quantity: detail.quantity,
-        price: detail.price
-      }))
+        price: detail.price,
+      })),
     };
     try {
       await dispatch(createNewOrder(orderRequest)).unwrap();
       setShowImage(false);
       setShowConfirmation(false);
       // Xóa các chi tiết giỏ hàng sau khi tạo đơn hàng thành công
-      cartDetails.forEach((detail) => {  
-      dispatch(removeCartDetail(detail.cartDetailId));
-    });
+      cartDetails.forEach((detail) => {
+        console.log("Xóa CartDetail với ID:", detail.cartDetailId);
+        dispatch(removeCartDetail(detail.cartDetailId));
+      });
       // Xử lý sau khi tạo đơn hàng thành công (ví dụ: điều hướng đến trang xác nhận)
     } catch (error) {
       console.error("Error creating order:", error);
@@ -130,19 +134,19 @@ const CartPage = () => {
     <MainLayout>
       <div className="cart-page">
         <h1>Cart</h1>
-
-        {currentUser && <p>Current User ID: {currentUser}</p>} {/* Hiển thị userId hiện tại */}
-
+        {currentUser && <p>Current User ID: {currentUser}</p>}{" "}
+        {/* Hiển thị userId hiện tại */}
         {carts.length > 0 ? (
           <div className="cart-info">
             <h2>Cart ID: {carts[0].cartId}</h2> {/* Sử dụng carts[0].cartId */}
             <p>User ID: {carts[0].userId}</p>
-            <p>Created At: {new Date(carts[0].createdAt).toLocaleDateString()}</p>
+            <p>
+              Created At: {new Date(carts[0].createdAt).toLocaleDateString()}
+            </p>
           </div>
         ) : (
           <p>No cart found for the current user.</p>
         )}
-
         <h2>Thông tin đơn hàng</h2>
         {cartDetails.length > 0 ? (
           <table className="cart-details-table">
@@ -162,8 +166,18 @@ const CartPage = () => {
                   {/* <td>{detail.cartDetailId}</td>  */}
                   <td>{detail.productName}</td>
                   <td>{detail.quantity}</td>
-                  <td>{detail.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                  <td>{(detail.price * detail.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                  <td>
+                    {detail.price.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </td>
+                  <td>
+                    {(detail.price * detail.quantity).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </td>
                   <td>
                     <button
                       className="checkout-button"
@@ -179,11 +193,9 @@ const CartPage = () => {
         ) : (
           <p>No items found in the cart.</p>
         )}
-
         <div className="cart-total">
           <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
         </div>
-
         {showImage && (
           <div className="payment-image">
             <img src={payment} alt="Processing Payment" />
@@ -199,7 +211,6 @@ const CartPage = () => {
       </div>
     </MainLayout>
   );
-
 };
 
 export default CartPage;

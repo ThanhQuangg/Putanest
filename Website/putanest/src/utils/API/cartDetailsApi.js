@@ -38,7 +38,11 @@ export const updateCartDetail = async (id, cartDetail) => {
 
 // Xóa chi tiết giỏ hàng
 export const deleteCartDetail = async (id) => {
-    await axios.delete(`${BASE_URL}/${id}`);
+    await axios.delete(`${BASE_URL}/${id}`,{
+        headers: {
+            Authorization: `Bearer ${token}`
+          }
+    });
 };
 
 // Tính tổng giá của giỏ hàng

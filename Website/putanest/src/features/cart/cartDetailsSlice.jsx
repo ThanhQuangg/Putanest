@@ -80,7 +80,9 @@ const cartDetailsSlice = createSlice({
                 }
             })
             .addCase(removeCartDetail.fulfilled, (state, action) => {
+                console.log("Trước khi xóa:", state.cartDetails);
                 state.items = state.items.filter(item => item.id !== action.payload);
+                console.log("Sau khi xóa:", state.cartDetails);
             })
             .addCase(fetchTotalPrice.fulfilled, (state, action) => {
                 state.totalPrice = action.payload;
