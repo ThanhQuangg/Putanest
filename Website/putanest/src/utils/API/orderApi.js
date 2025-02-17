@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/orders';
-
+// const BASE_URL = 'http://localhost:8080/api/orders';
+const BASE_URL = 'https://putanest-h9ou.onrender.com/api/orders';
 // Tạo đơn hàng mới
 export const createOrder = async (orderRequest) => {
     const response = await axios.post(BASE_URL, orderRequest, {

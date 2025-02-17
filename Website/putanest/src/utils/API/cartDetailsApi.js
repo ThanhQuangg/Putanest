@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/cartdetails';
+// const BASE_URL = 'http://localhost:8080/api/cartdetails';
+const BASE_URL = 'https://putanest-h9ou.onrender.com/api/cartdetails';
 
 // Lấy tất cả chi tiết giỏ hàng
 export const getAllCartDetails = async () => {
