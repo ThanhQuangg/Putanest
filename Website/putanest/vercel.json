@@ -1,5 +1,11 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/index.html" }
-    ]
-  }
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "redirects": [
+    {
+      "source": "/admin/:path*",
+      "destination": "/index.html",
+      "statusCode": 200
+    },
+    { "source": "/cart", "destination": "/index.html", "statusCode": 200 }
+  ]
+}
