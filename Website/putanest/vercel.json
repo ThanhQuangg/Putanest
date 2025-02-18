@@ -1,11 +1,17 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "redirects": [
-    {
-      "source": "/admin/:path*",
-      "destination": "/index.html",
-      "statusCode": 200
-    },
-    { "source": "/cart", "destination": "/index.html", "statusCode": 200 }
+    { "source": "/products", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/products/list", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/products/:id", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/category/:categoryId", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/admin/products", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/admin/categories", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/search-results", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/login", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/cart", "destination": "/index.html", "statusCode": 200 },
+    { "source": "/order", "destination": "/index.html", "statusCode": 200 }
   ]
 }
