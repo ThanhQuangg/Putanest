@@ -4,12 +4,14 @@ import { fetchCartByUserId } from "../../features/cart/cartSlice";
 import {
   fetchCartDetailsByCartId,
   fetchTotalPrice,
-  removeCartDetail
+  removeCartDetail,
 } from "../../features/cart/cartDetailsSlice";
 import { createNewOrder } from "../../features/orders/orderSlice";
 import "../../styles/Carts.scss";
 import MainLayout from "../../layouts/MainLayout";
 import payment from "../../assets/image/avatar.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,7 @@ const CartPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showImage, setShowImage] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   // Lấy userId từ token và gọi API
   useEffect(() => {
@@ -68,15 +71,6 @@ const CartPage = () => {
             setCartDetailsStatus("failed");
             console.error("Error fetching cart details:", error);
           });
-
-        dispatch(fetchTotalPrice(cartId))
-          .unwrap()
-          .then((response) => {
-            setTotalPrice(response);
-          })
-          .catch((error) => {
-            console.error("Error fetching total price:", error);
-          });
       }
     }
   }, [dispatch, carts]);
@@ -84,29 +78,6 @@ const CartPage = () => {
   const handlePayment = () => {
     setShowImage(true); // Hiển thị ảnh
     setShowConfirmation(true); // Hiển thị thông báo và các nút
-  };
-
-  const handleConfirmPayment = async () => {
-    const orderRequest = {
-      userId: currentUser,
-      orderDetails: cartDetails.map((detail) => ({
-        productId: detail.productId,
-        quantity: detail.quantity,
-        price: detail.price,
-      })),
-    };
-    try {
-      await dispatch(createNewOrder(orderRequest)).unwrap();
-      setShowImage(false);
-      setShowConfirmation(false);
-      // Xóa các chi tiết giỏ hàng sau khi tạo đơn hàng thành công
-      cartDetails.forEach((detail) => {
-        dispatch(removeCartDetail(detail.cartDetailId));
-      });
-      // Xử lý sau khi tạo đơn hàng thành công (ví dụ: điều hướng đến trang xác nhận)
-    } catch (error) {
-      console.error("Error creating order:", error);
-    }
   };
 
   const handleCancelPayment = () => {
@@ -129,29 +100,140 @@ const CartPage = () => {
     return <div>Error loading cart data.</div>;
   }
 
+  const handleQuantityChange = (cartDetailId, newQuantity) => {
+    // Đảm bảo số lượng hợp lệ (>= 1)
+    const validQuantity = parseInt(newQuantity, 10);
+    if (isNaN(validQuantity) || validQuantity < 1) return;
+
+    // Tìm chi tiết giỏ hàng cần cập nhật
+    const updatedDetail = cartDetails.find(
+      (detail) => detail.cartDetailId === cartDetailId
+    );
+    if (!updatedDetail) return;
+
+    // Chuẩn bị dữ liệu gửi lên API
+    const updatedCartDetail = {
+      ...updatedDetail,
+      quantity: validQuantity,
+    };
+
+    // Gửi yêu cầu cập nhật lên API
+    fetch(`http://localhost:8080/api/cartdetails/${cartDetailId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedCartDetail),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Cập nhật thất bại");
+        }
+        return response.json();
+      })
+      .then((updatedResponse) => {
+        // Cập nhật lại trạng thái giỏ hàng
+        setCartDetails((prevDetails) =>
+          prevDetails.map((detail) =>
+            detail.cartDetailId === cartDetailId ? updatedResponse : detail
+          )
+        );
+
+        // Cập nhật lại tổng giá trị giỏ hàng
+        const updatedTotal = cartDetails.reduce((sum, detail) => {
+          return (
+            sum +
+            detail.price *
+              (detail.cartDetailId === cartDetailId
+                ? validQuantity
+                : detail.quantity)
+          );
+        }, 0);
+        setTotalPrice(updatedTotal);
+      })
+      .catch((error) => console.error("Error updating quantity:", error));
+  };
+
+  // Hàm xử lý chọn/bỏ chọn sản phẩm
+  const handleSelectItem = (cartDetailId) => {
+    setSelectedItems((prevSelected) => {
+      if (prevSelected.includes(cartDetailId)) {
+        return prevSelected.filter((id) => id !== cartDetailId);
+      } else {
+        return [...prevSelected, cartDetailId];
+      }
+    });
+  };
+
+  // Tính tổng tiền chỉ dựa trên sản phẩm đã chọn
+  const selectedTotalPrice = cartDetails
+    .filter((detail) => selectedItems.includes(detail.cartDetailId))
+    .reduce((sum, detail) => sum + detail.price * detail.quantity, 0);
+
+  // Thanh toán chỉ những sản phẩm đã chọn
+  const handleConfirmPayment = async () => {
+    const orderRequest = {
+      userId: currentUser,
+      orderDetails: cartDetails
+        .filter((detail) => selectedItems.includes(detail.cartDetailId))
+        .map((detail) => ({
+          productId: detail.productId,
+          quantity: detail.quantity,
+          price: detail.price,
+        })),
+    };
+
+    try {
+      await dispatch(createNewOrder(orderRequest)).unwrap();
+      setShowImage(false);
+      setShowConfirmation(false);
+
+     
+
+      // Đợi tất cả các mục được xóa hoàn tất trước khi cập nhật giỏ hàng
+      await Promise.all(
+        selectedItems.map((cartDetailId) =>
+          dispatch(removeCartDetail(cartDetailId)).unwrap()
+        )
+      );
+
+      // Cập nhật lại giỏ hàng sau khi xóa
+      if (carts.length > 0) {
+        await dispatch(fetchCartDetailsByCartId(carts[0].cartId)).unwrap();
+      }
+
+      // Xóa danh sách sản phẩm đã chọn
+      setSelectedItems([]);
+
+      // Cập nhật lại trạng thái cartDetails
+      setCartDetails((prevDetails) =>
+        prevDetails.filter(
+          (detail) => !selectedItems.includes(detail.cartDetailId)
+        )
+      );
+
+      toast.success("Sản phẩm đã được đặt thành công!", {
+        position: "top-right",
+        autoClose: 3000, 
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
+  };
   return (
     <MainLayout>
       <div className="cart-page">
-        <h1>Cart</h1>
-        {currentUser && <p>Current User ID: {currentUser}</p>}{" "}
-        {/* Hiển thị userId hiện tại */}
-        {carts.length > 0 ? (
-          <div className="cart-info">
-            <h2>Cart ID: {carts[0].cartId}</h2> {/* Sử dụng carts[0].cartId */}
-            <p>User ID: {carts[0].userId}</p>
-            <p>
-              Created At: {new Date(carts[0].createdAt).toLocaleDateString()}
-            </p>
-          </div>
-        ) : (
-          <p>No cart found for the current user.</p>
-        )}
-        <h2>Thông tin đơn hàng</h2>
+        <h1>Giỏ hàng</h1>
+        <h2>Thông tin giỏ hàng</h2>
         {cartDetails.length > 0 ? (
           <table className="cart-details-table">
             <thead>
               <tr>
-                {/* <th>ID</th> */}
                 <th>Tên sản phẩm</th>
                 <th>Số lượng</th>
                 <th>Giá</th>
@@ -161,10 +243,21 @@ const CartPage = () => {
             </thead>
             <tbody>
               {cartDetails.map((detail) => (
-                <tr key={detail.cartDetailsId}>
-                  {/* <td>{detail.cartDetailId}</td>  */}
+                <tr key={detail.cartDetailId}>
                   <td>{detail.productName}</td>
-                  <td>{detail.quantity}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={detail.quantity}
+                      min="1"
+                      onChange={(e) =>
+                        handleQuantityChange(
+                          detail.cartDetailId,
+                          e.target.value
+                        )
+                      }
+                    />
+                  </td>
                   <td>
                     {detail.price.toLocaleString("vi-VN", {
                       style: "currency",
@@ -178,12 +271,11 @@ const CartPage = () => {
                     })}
                   </td>
                   <td>
-                    <button
-                      className="checkout-button"
-                      onClick={() => handleConfirmPayment(detail.cartDetailId)}
-                    >
-                      Thanh toán
-                    </button>
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.includes(detail.cartDetailId)}
+                      onChange={() => handleSelectItem(detail.cartDetailId)}
+                    />
                   </td>
                 </tr>
               ))}
@@ -192,9 +284,21 @@ const CartPage = () => {
         ) : (
           <p>No items found in the cart.</p>
         )}
+
         <div className="cart-total">
-          <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+          <h3>
+            Total Price:{" "}
+            {selectedTotalPrice.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </h3>
         </div>
+        {selectedItems.length > 0 && (
+          <button className="checkout-button" onClick={handleConfirmPayment}>
+            Thanh toán sản phẩm đã chọn
+          </button>
+        )}
         {showImage && (
           <div className="payment-image">
             <img src={payment} alt="Processing Payment" />

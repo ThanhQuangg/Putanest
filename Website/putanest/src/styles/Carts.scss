@@ -61,21 +61,26 @@
           border-bottom: 1px solid #ddd;
         }
 
-        .checkout-button {
-          padding: 0.5rem 1rem;
-          background-color: #27ae60;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: #1e8449;
-          }
-        }
+        
       }
+    }
+  }
+
+  .checkout-button {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 1150px;
+    margin-top: 50px;
+    align-items: flex-end;
+    &:hover {
+      background-color: #1e8449;
     }
   }
 

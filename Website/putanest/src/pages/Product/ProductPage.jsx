@@ -18,7 +18,6 @@ const ProductPage = () => {
           <li key={product.id}>{product.name}</li>
         ))}
       </ul>
-      {/* Thêm các chức năng thêm, sửa, xóa sản phẩm ở đây */}
     </div>
   );
 };

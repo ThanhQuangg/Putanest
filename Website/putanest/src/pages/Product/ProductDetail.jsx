@@ -7,6 +7,8 @@ import { addCartDetail } from "../../features/cart/cartDetailsSlice";
 import { useParams } from "react-router-dom";
 import "../../styles/ProductDetail.scss";
 import MainLayout from "../../layouts/MainLayout";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -86,6 +88,15 @@ const ProductDetail = () => {
         quantity,
       })
     );
+    toast.success("Sản phẩm đã được thêm vào giỏ hàng!", {
+      position: "top-right",
+      autoClose: 2000, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
   };
   return (
     <MainLayout>

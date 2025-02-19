@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import '../../styles/Header.scss';
+import "../../styles/Header.scss";
 import logo from "../../assets/image/logo.png";
 import { getAllCategories } from "../../utils/API/category";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../features/users/userSlice";
-import axios from 'axios';
+import axios from "axios";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -37,7 +37,6 @@ const Header = () => {
     }
   }, []);
 
-
   const handleLogin = () => {
     navigate(`/login`, { state: { isRegister: false } });
   };
@@ -50,7 +49,7 @@ const Header = () => {
     dispatch(logoutUser());
     setIsLoggedIn(false);
     setUsername("");
-    navigate('/');
+    navigate("/");
   };
 
   const handleSearchChange = (e) => {
@@ -60,7 +59,11 @@ const Header = () => {
   const handleSearch = async () => {
     if (searchQuery.trim()) {
       try {
-        const response = await axios.get(`http://localhost:8080/api/products/search?q=${encodeURIComponent(searchQuery)}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/products/search?q=${encodeURIComponent(
+            searchQuery
+          )}`
+        );
 
         if (Array.isArray(response.data)) {
           const searchResults = response.data;
@@ -88,7 +91,7 @@ const Header = () => {
   };
 
   const handleNewOptionClick = () => {
-    navigate('/products/list');
+    navigate("/products/list");
   };
 
   return (
@@ -107,7 +110,9 @@ const Header = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link active" href="/">Trang chủ</a>
+                <a className="nav-link active" href="/">
+                  Trang chủ
+                </a>
               </li>
 
               {/* Dropdown Loại sản phẩm */}
@@ -119,9 +124,18 @@ const Header = () => {
                   onClick={(e) => e.preventDefault()}
                   data-bs-toggle="dropdown"
                 >
-                  Loại sản phẩm
+                  Sản phẩm
                 </a>
                 <ul className="dropdown-menu" id="categoriesDropdownMenu">
+                  <li>
+                    <a
+                      className="dropdown-item"
+                      href="#"
+                      onClick={handleNewOptionClick}
+                    >
+                      Tất cả sản phẩm
+                    </a>
+                  </li>
                   {categories.map((category) => (
                     <li key={category.categoryId}>
                       <a
@@ -133,23 +147,18 @@ const Header = () => {
                       </a>
                     </li>
                   ))}
-                  <li>
-                    <a
-                      className="dropdown-item"
-                      href="#"
-                      onClick={handleNewOptionClick}
-                    >
-                      Tất cả sản phẩm
-                    </a>
-                  </li>
                 </ul>
               </li>
 
               <li className="nav-item">
-                <a className="nav-link" href="/cart">Giỏ Hàng</a>
+                <a className="nav-link" href="/cart">
+                  Giỏ Hàng
+                </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">Liên Hệ</a>
+                <a className="nav-link" href="#">
+                  Liên Hệ
+                </a>
               </li>
 
               {/* Dropdown Admin */}
@@ -165,10 +174,14 @@ const Header = () => {
                 </a>
                 <ul className="dropdown-menu">
                   <li>
-                    <a className="dropdown-item" href="/admin/products">Quản lý sản phẩm</a>
+                    <a className="dropdown-item" href="/admin/products">
+                      Quản lý sản phẩm
+                    </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="/admin/categories">Quản lý danh mục</a>
+                    <a className="dropdown-item" href="/admin/categories">
+                      Quản lý danh mục
+                    </a>
                   </li>
                 </ul>
               </li>
@@ -177,7 +190,6 @@ const Header = () => {
 
           {/* Tìm kiếm, đăng nhập/đăng xuất */}
           <div className="navbar-actions d-flex align-items-center">
-
             <div className="search-bar">
               <input
                 type="text"
@@ -192,10 +204,14 @@ const Header = () => {
               {isLoggedIn ? (
                 <>
                   <p className="text">Welcome, {username}!</p>
-                  <button className="btn" onClick={handleLogout}>Đăng xuất</button>
+                  <button className="btn" onClick={handleLogout}>
+                    Đăng xuất
+                  </button>
                 </>
               ) : (
-                <button className="btn" onClick={handleLogin}>Đăng nhập</button>
+                <button className="btn" onClick={handleLogin}>
+                  Đăng nhập
+                </button>
               )}
             </div>
           </div>

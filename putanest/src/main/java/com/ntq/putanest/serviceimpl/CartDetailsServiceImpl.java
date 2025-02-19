@@ -50,14 +50,29 @@ public class CartDetailsServiceImpl implements CartDetailsService {
         return convertToDTO(savedCartDetail);
     }
 
+//    @Override
+//    @Transactional
+//    public CartdetailsDTO updateCartDetail(Integer cartDetailId, CartdetailsDTO cartDetailDTO) {
+//        if (!cartDetailsRepository.existsById(cartDetailId)) {
+//            throw new IllegalArgumentException("Cart detail ID không tồn tại.");
+//        }
+//        Cartdetails cartDetail = convertToEntity(cartDetailDTO);
+//        cartDetail.setCartDetailId(cartDetailId);
+//        Cartdetails updatedCartDetail = cartDetailsRepository.save(cartDetail);
+//        return convertToDTO(updatedCartDetail);
+//    }
+
     @Override
     @Transactional
     public CartdetailsDTO updateCartDetail(Integer cartDetailId, CartdetailsDTO cartDetailDTO) {
-        if (!cartDetailsRepository.existsById(cartDetailId)) {
-            throw new IllegalArgumentException("Cart detail ID không tồn tại.");
+        Cartdetails cartDetail = cartDetailsRepository.findById(cartDetailId)
+                .orElseThrow(() -> new IllegalArgumentException("Cart detail ID không tồn tại."));
+
+        // Chỉ cập nhật nếu quantity không null
+        if (cartDetailDTO.getQuantity() != null) {
+            cartDetail.setQuantity(cartDetailDTO.getQuantity());
         }
-        Cartdetails cartDetail = convertToEntity(cartDetailDTO);
-        cartDetail.setCartDetailId(cartDetailId);
+
         Cartdetails updatedCartDetail = cartDetailsRepository.save(cartDetail);
         return convertToDTO(updatedCartDetail);
     }
