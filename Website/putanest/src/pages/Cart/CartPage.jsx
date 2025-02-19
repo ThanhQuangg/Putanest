@@ -118,7 +118,7 @@ const CartPage = () => {
     };
 
     // Gửi yêu cầu cập nhật lên API
-    fetch(`http://localhost:8080/api/cartdetails/${cartDetailId}`, {
+    fetch(`https://putanest-h9ou.onrender.com/api/cartdetails/${cartDetailId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -250,6 +250,7 @@ const CartPage = () => {
                       type="number"
                       value={detail.quantity}
                       min="1"
+                      style={{ width: "50px", textAlign: "center" }} 
                       onChange={(e) =>
                         handleQuantityChange(
                           detail.cartDetailId,
