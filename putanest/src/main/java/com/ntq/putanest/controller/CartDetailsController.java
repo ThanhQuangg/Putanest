@@ -44,9 +44,6 @@ public class CartDetailsController {
     @GetMapping("/cart/{cartId}")
     public ResponseEntity<List<CartdetailsDTO>> getCartDetailsByCartId(@PathVariable Integer cartId) {
         List<CartdetailsDTO> cartDetails = cartDetailsService.findByCartId(cartId);
-        if (cartDetails.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(cartDetails);
     }
 

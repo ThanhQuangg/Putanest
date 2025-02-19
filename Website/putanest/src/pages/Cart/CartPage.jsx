@@ -68,8 +68,9 @@ const CartPage = () => {
             setCartDetailsStatus("succeeded");
           })
           .catch((error) => {
-            setCartDetailsStatus("failed");
-            console.error("Error fetching cart details:", error);
+            setCartDetails([]);
+            setCartDetailsStatus("succeeded");
+           
           });
       }
     }
@@ -118,13 +119,16 @@ const CartPage = () => {
     };
 
     // Gửi yêu cầu cập nhật lên API
-    fetch(`https://putanest-h9ou.onrender.com/api/cartdetails/${cartDetailId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedCartDetail),
-    })
+    fetch(
+      `https://putanest-h9ou.onrender.com/api/cartdetails/${cartDetailId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedCartDetail),
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Cập nhật thất bại");
@@ -188,8 +192,6 @@ const CartPage = () => {
       setShowImage(false);
       setShowConfirmation(false);
 
-     
-
       // Đợi tất cả các mục được xóa hoàn tất trước khi cập nhật giỏ hàng
       await Promise.all(
         selectedItems.map((cartDetailId) =>
@@ -214,7 +216,7 @@ const CartPage = () => {
 
       toast.success("Sản phẩm đã được đặt thành công!", {
         position: "top-right",
-        autoClose: 3000, 
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -250,7 +252,7 @@ const CartPage = () => {
                       type="number"
                       value={detail.quantity}
                       min="1"
-                      style={{ width: "50px", textAlign: "center" }} 
+                      style={{ width: "50px", textAlign: "center" }}
                       onChange={(e) =>
                         handleQuantityChange(
                           detail.cartDetailId,
@@ -283,12 +285,12 @@ const CartPage = () => {
             </tbody>
           </table>
         ) : (
-          <p>No items found in the cart.</p>
+          <p>Không có sản phẩm nào trong giỏ hàng.</p>
         )}
 
         <div className="cart-total">
           <h3>
-            Total Price:{" "}
+            Tổng:{" "}
             {selectedTotalPrice.toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",

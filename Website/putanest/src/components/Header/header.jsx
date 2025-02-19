@@ -60,7 +60,7 @@ const Header = () => {
     if (searchQuery.trim()) {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/products/search?q=${encodeURIComponent(
+          `https://putanest-h9ou.onrender.com/api/products/search?q=${encodeURIComponent(
             searchQuery
           )}`
         );
@@ -187,33 +187,32 @@ const Header = () => {
               </li>
             </ul>
           </div>
-
-          {/* Tìm kiếm, đăng nhập/đăng xuất */}
-          <div className="navbar-actions d-flex align-items-center">
-            <div className="search-bar">
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                className="search-input"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onKeyDown={handleSearchKeyDown}
-              />
-            </div>
-            <div className="auth-actions">
-              {isLoggedIn ? (
-                <>
-                  <p className="text">Welcome, {username}!</p>
-                  <button className="btn" onClick={handleLogout}>
-                    Đăng xuất
-                  </button>
-                </>
-              ) : (
-                <button className="btn" onClick={handleLogin}>
-                  Đăng nhập
+        </div>
+        {/* Tìm kiếm, đăng nhập/đăng xuất */}
+        <div className="navbar-actions d-flex align-items-center">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              className="search-input"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeyDown}
+            />
+          </div>
+          <div className="auth-actions">
+            {isLoggedIn ? (
+              <>
+                <p className="text">Xin chào, {username}!</p>
+                <button className="btn" onClick={handleLogout}>
+                  Đăng xuất
                 </button>
-              )}
-            </div>
+              </>
+            ) : (
+              <button className="btn" onClick={handleLogin}>
+                Đăng nhập
+              </button>
+            )}
           </div>
         </div>
       </nav>
