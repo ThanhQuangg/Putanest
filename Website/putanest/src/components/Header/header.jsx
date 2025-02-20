@@ -12,6 +12,7 @@ const Header = () => {
   const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -30,10 +31,12 @@ const Header = () => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserId = localStorage.getItem("userId");
     const storedUsername = localStorage.getItem("username");
+    const storedRole = localStorage.getItem("userRole");
 
     if (isLoggedIn && storedUserId && storedUsername) {
       setIsLoggedIn(true);
       setUsername(storedUsername);
+      setRole(storedRole);
     }
   }, []);
 
@@ -162,6 +165,7 @@ const Header = () => {
               </li>
 
               {/* Dropdown Admin */}
+              {role === "ROLE_Admin" && (
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
@@ -185,6 +189,7 @@ const Header = () => {
                   </li>
                 </ul>
               </li>
+              )}
             </ul>
           </div>
         </div>

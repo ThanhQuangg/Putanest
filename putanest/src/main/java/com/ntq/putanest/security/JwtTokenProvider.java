@@ -1,12 +1,13 @@
 package com.ntq.putanest.security;
 
+import com.ntq.putanest.pojo.Users;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,8 +19,9 @@ public class JwtTokenProvider {
     private final long JWT_EXPIRATION = 86400000L; // Thời gian sống của token (1 ngày)
 
     // Tạo token từ Authentication
-    public String generateToken(Authentication authentication, Integer userId) {
+    public String generateToken(Authentication authentication, Integer userId, Users user) {
         String username = authentication.getName();
+        String role = user.getRole();
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
@@ -68,7 +70,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parser().setSigningKey(JWT_SECRET).parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException ex) {
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
+                 IllegalArgumentException ex) {
             return false;
         }
     }

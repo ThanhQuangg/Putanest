@@ -11,6 +11,8 @@ import com.ntq.putanest.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -110,19 +112,28 @@ public class UsersServiceImpl implements UsersService {
     public Optional<Map<String, String>> authenticate(String username, String password) {
         Optional<Users> user = usersRepository.findByUsername(username);
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+            // Lấy role từ user
+            String role = user.get().getRole();
+
+            // Tạo danh sách quyền từ role
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
+
             // Tạo đối tượng Authentication từ thông tin người dùng
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    user.get().getUsername(), null, Collections.emptyList()
+                    user.get().getUsername(), null,  authorities
+//                    Collections.emptyList(),
             );
 
+
             // Tạo token từ đối tượng Authentication
-            String token = jwtTokenProvider.generateToken(authentication, user.get().getUserId());
+            String token = jwtTokenProvider.generateToken(authentication, user.get().getUserId(),user.get());
 
             // Tạo response chứa token và username
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("username", user.get().getUsername());
             response.put("userId", user.get().getUserId().toString());
+            response.put("role", role);
             return Optional.of(response);
         }
         return Optional.empty();

@@ -29,12 +29,14 @@ export const loginUser = createAsyncThunk(
   async ({ username, password }, thunkAPI) => {
     try {
       const response = await login(username, password); // Gọi API
-      const { token, userId, username: responseUsername } = response; // Lấy dữ liệu từ phản hồi
+      const { token, userId, username: responseUsername, role } = response; // Lấy dữ liệu từ phản hồi
+      console.log("API Response:", response);
 
       // Lưu thông tin vào localStorage
       saveToLocalStorage("token", token);
       saveToLocalStorage("username", responseUsername);
       saveToLocalStorage("userId", userId);
+      saveToLocalStorage("role", role);
       localStorage.setItem('isLoggedIn', 'true');
       return { token, userId, username: responseUsername }; // Trả dữ liệu
     } catch (error) {
@@ -60,6 +62,7 @@ const userSlice = createSlice({
       removeFromLocalStorage('username');
       removeFromLocalStorage('userId');
       removeFromLocalStorage('user');
+      removeFromLocalStorage('role');
       localStorage.setItem('isLoggedIn', 'false');
       
     },
