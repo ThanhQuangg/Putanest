@@ -55,12 +55,11 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() //Tất cả API GET không cần token
                         .requestMatchers(HttpMethod.POST, "/api/categories","/api/products").hasAnyRole(("Admin"))
                         .requestMatchers(HttpMethod.PUT, "/api/categories","/api/products").hasAnyRole(("Admin"))
-                        .requestMatchers("/api/users/login", "/api/users/register").permitAll() // Cho phép không cần token
-                        .requestMatchers("/api/**").hasAnyRole("Admin", "Customer") // Customer và Admin truy cập
-                        .anyRequest().authenticated() // Các request khác phải có token hợp lệ
+                        .requestMatchers(HttpMethod.DELETE,"/api/categories", "/api/products").hasAnyRole(("Admin"))
+                        .requestMatchers(HttpMethod.GET, "/api/carts/*","api/cartdetails/cart/").authenticated()
+                        .anyRequest().permitAll() // Các request khác phải có token hợp lệ
 
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Tắt session, chỉ dùng JWT

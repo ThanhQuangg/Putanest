@@ -32,7 +32,7 @@ public class OrdersController {
         // Tạo đơn hàng mới
         Orders newOrder = new Orders();
         newOrder.setUserId(orderRequest.getUserId());
-        newOrder.setOrderStatus("Pending");
+        newOrder.setOrderStatus("Đã thanh toán");
         newOrder.setCreatedAt(LocalDateTime.now());
         newOrder.setUpdatedAt(LocalDateTime.now());
         // Tính toán totalAmount

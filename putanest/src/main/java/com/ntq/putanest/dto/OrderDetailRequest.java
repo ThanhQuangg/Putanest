@@ -6,6 +6,7 @@ public class OrderDetailRequest {
     private Integer productId;
     private Integer quantity;
     private BigDecimal price;
+    private String productName;
 
 
     public Integer getProductId() {
@@ -30,5 +31,13 @@ public class OrderDetailRequest {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

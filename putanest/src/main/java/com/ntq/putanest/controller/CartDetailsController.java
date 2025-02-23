@@ -1,13 +1,6 @@
-
-
-
-
 package com.ntq.putanest.controller;
 
 import com.ntq.putanest.dto.CartdetailsDTO;
-import com.ntq.putanest.dto.CartsDTO;
-import com.ntq.putanest.pojo.Cartdetails;
-import com.ntq.putanest.pojo.Carts;
 import com.ntq.putanest.service.CartDetailsService;
 import com.ntq.putanest.service.CartsService;
 import org.springframework.beans.factory.annotation.Autowired;

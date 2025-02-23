@@ -8,6 +8,7 @@ public class OrderdetailsDTO {
     private Integer productId;
     private Integer quantity;
     private BigDecimal price;
+    private String productName;
 
 
     public Integer getOrderDetailId() {
@@ -50,4 +51,11 @@ public class OrderdetailsDTO {
         this.price = price;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 }

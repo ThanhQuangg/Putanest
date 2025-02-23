@@ -1,6 +1,5 @@
 package com.ntq.putanest.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderRequest {

@@ -11,6 +11,5 @@ import java.util.Optional;
 @Repository
 public interface CartDetailsRepository extends JpaRepository<Cartdetails, Integer> {
     List<Cartdetails> findByCart_CartId(Integer cartId);
-
 }
 

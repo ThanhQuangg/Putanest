@@ -50,18 +50,6 @@ public class CartDetailsServiceImpl implements CartDetailsService {
         return convertToDTO(savedCartDetail);
     }
 
-//    @Override
-//    @Transactional
-//    public CartdetailsDTO updateCartDetail(Integer cartDetailId, CartdetailsDTO cartDetailDTO) {
-//        if (!cartDetailsRepository.existsById(cartDetailId)) {
-//            throw new IllegalArgumentException("Cart detail ID không tồn tại.");
-//        }
-//        Cartdetails cartDetail = convertToEntity(cartDetailDTO);
-//        cartDetail.setCartDetailId(cartDetailId);
-//        Cartdetails updatedCartDetail = cartDetailsRepository.save(cartDetail);
-//        return convertToDTO(updatedCartDetail);
-//    }
-
     @Override
     @Transactional
     public CartdetailsDTO updateCartDetail(Integer cartDetailId, CartdetailsDTO cartDetailDTO) {

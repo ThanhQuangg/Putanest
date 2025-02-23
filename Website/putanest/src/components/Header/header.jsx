@@ -31,7 +31,7 @@ const Header = () => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     const storedUserId = localStorage.getItem("userId");
     const storedUsername = localStorage.getItem("username");
-    const storedRole = localStorage.getItem("userRole");
+    const storedRole = localStorage.getItem("role");
 
     if (isLoggedIn && storedUserId && storedUsername) {
       setIsLoggedIn(true);
@@ -159,8 +159,8 @@ const Header = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Liên Hệ
+                <a className="nav-link" href="/order">
+                  Lịch sử
                 </a>
               </li>
 

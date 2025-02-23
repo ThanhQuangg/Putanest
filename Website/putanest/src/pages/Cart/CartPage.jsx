@@ -58,7 +58,7 @@ const CartPage = () => {
   // Lấy chi tiết giỏ hàng theo cartId
   useEffect(() => {
     if (carts.length > 0) {
-      const cartId = carts[0].cartId; // Sử dụng carts[0].cartId
+      const cartId = carts[0].cartId; 
       if (cartId) {
         setCartDetailsStatus("loading");
         dispatch(fetchCartDetailsByCartId(cartId))
@@ -70,7 +70,6 @@ const CartPage = () => {
           .catch((error) => {
             setCartDetails([]);
             setCartDetailsStatus("succeeded");
-           
           });
       }
     }
@@ -227,6 +226,34 @@ const CartPage = () => {
       console.error("Error creating order:", error);
     }
   };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      try {
+        await dispatch(removeCartDetail(id)).unwrap();
+        toast.success("Xóa sản phẩm thành công!", { position: "top-right" });
+
+        // Xóa sản phẩm khỏi state cartDetails ngay lập tức để re-render
+        setCartDetails((prevDetails) =>
+          prevDetails.filter((detail) => detail.cartDetailId !== id)
+        );
+
+        // Fetch lại danh sách giỏ hàng để đảm bảo dữ liệu mới nhất
+        if (carts.length > 0) {
+          const updatedCart = await dispatch(
+            fetchCartDetailsByCartId(carts[0].cartId)
+          ).unwrap();
+          setCartDetails(updatedCart);
+        }
+      } catch (error) {
+        console.error("Lỗi khi xóa hoặc cập nhật giỏ hàng:", error);
+        toast.error("Xóa thất bại! Vui lòng thử lại.", {
+          position: "top-right",
+        });
+      }
+    }
+  };
+
   return (
     <MainLayout>
       <div className="cart-page">
@@ -240,6 +267,7 @@ const CartPage = () => {
                 <th>Số lượng</th>
                 <th>Giá</th>
                 <th>Tổng cộng</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
@@ -280,6 +308,9 @@ const CartPage = () => {
                       onChange={() => handleSelectItem(detail.cartDetailId)}
                     />
                   </td>
+                  <button onClick={() => handleDelete(detail.cartDetailId)}>
+                    Xóa 
+                  </button>
                 </tr>
               ))}
             </tbody>
