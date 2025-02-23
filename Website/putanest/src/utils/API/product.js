@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/products';
-// const BASE_URL = 'https://putanest-h9ou.onrender.com/api/products';
+// const BASE_URL = 'http://localhost:8080/api/products';
+const BASE_URL = 'https://putanest-h9ou.onrender.com/api/products';
 
 // Lấy tất cả sản phẩm
 export const getAllProducts = async () => {
