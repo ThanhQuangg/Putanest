@@ -7,6 +7,7 @@ import {
   removeCartDetail,
 } from "../../features/cart/cartDetailsSlice";
 import { createNewOrder } from "../../features/orders/orderSlice";
+import { addGuestOrder } from "../../features/orders/guestOrderSlice";
 import "../../styles/Carts.scss";
 import MainLayout from "../../layouts/MainLayout";
 import payment from "../../assets/image/avatar.png";
@@ -24,22 +25,35 @@ const CartPage = () => {
   const [showImage, setShowImage] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const isGuest = !currentUser;
+  const [formData, setFormData] = useState({
+    customerName: "",
+    email: "",
+    phoneNumber: "",
+    address: "",
+  });
 
-  // Lấy userId từ token và gọi API
+  const [guestOrderDetails, setGuestOrderDetails] = useState(
+    JSON.parse(localStorage.getItem("guestCart")) || []
+  );
+
+  // Kiểm tra token và localStorage để lấy giỏ hàng
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const guestCart = localStorage.getItem("guestCart");
+
     if (token) {
       try {
-        const decodedToken = JSON.parse(atob(token.split(".")[1])); // Giải mã token
+        const decodedToken = JSON.parse(atob(token.split(".")[1]));
         const userId = decodedToken?.userId;
 
         if (userId) {
-          setCurrentUser(userId); // Cập nhật trạng thái currentUser
+          setCurrentUser(userId);
           setCartStatus("loading");
           dispatch(fetchCartByUserId(userId))
             .unwrap()
             .then((response) => {
-              setCarts([response]); // Đảm bảo rằng phản hồi được lưu trữ dưới dạng mảng
+              setCarts([response]);
               setCartStatus("succeeded");
             })
             .catch((error) => {
@@ -50,15 +64,24 @@ const CartPage = () => {
       } catch (error) {
         console.error("Invalid token:", error);
       }
+    } else if (guestCart) {
+      // Nếu không có token nhưng có guestCart => load từ localStorage
+      try {
+        const parsedGuestCart = JSON.parse(guestCart);
+        setCartDetails(parsedGuestCart);
+        setCartStatus("succeeded");
+      } catch (error) {
+        console.error("Error parsing guestCart:", error);
+      }
     } else {
-      console.error("No token found in localStorage");
+      console.error("No token or guestCart found");
     }
   }, [dispatch]);
 
   // Lấy chi tiết giỏ hàng theo cartId
   useEffect(() => {
     if (carts.length > 0) {
-      const cartId = carts[0].cartId; 
+      const cartId = carts[0].cartId;
       if (cartId) {
         setCartDetailsStatus("loading");
         dispatch(fetchCartDetailsByCartId(cartId))
@@ -69,7 +92,7 @@ const CartPage = () => {
           })
           .catch((error) => {
             setCartDetails([]);
-            setCartDetailsStatus("succeeded");
+            setCartDetailsStatus("failed");
           });
       }
     }
@@ -92,13 +115,9 @@ const CartPage = () => {
     return <div>Error loading cart data.</div>;
   }
 
-  if (cartStatus === "loading" || cartDetailsStatus === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (cartStatus === "failed" || cartDetailsStatus === "failed") {
-    return <div>Error loading cart data.</div>;
-  }
+  const updateGuestCart = (updatedCart) => {
+    localStorage.setItem("guestCart", JSON.stringify(updatedCart));
+  };
 
   const handleQuantityChange = (cartDetailId, newQuantity) => {
     // Đảm bảo số lượng hợp lệ (>= 1)
@@ -111,11 +130,14 @@ const CartPage = () => {
     );
     if (!updatedDetail) return;
 
-    // Chuẩn bị dữ liệu gửi lên API
-    const updatedCartDetail = {
-      ...updatedDetail,
-      quantity: validQuantity,
-    };
+    const updatedCartDetails = cartDetails.map((detail) =>
+      detail.cartDetailId === cartDetailId
+        ? { ...detail, quantity: validQuantity }
+        : detail
+    );
+
+    setCartDetails(updatedCartDetails);
+    updateGuestCart(updatedCartDetails); // Cập nhật lại localStorage
 
     // Gửi yêu cầu cập nhật lên API
     fetch(
@@ -227,6 +249,63 @@ const CartPage = () => {
     }
   };
 
+  //GuestPaymentForm
+
+  // const [formData, setFormData] = useState({
+  //   customerName: "",
+  //   email: "",
+  //   phoneNumber: "",
+  //   address: "",
+  // });
+
+  // const [guestOrderDetails, setGuestOrderDetails] = useState(
+  //   JSON.parse(localStorage.getItem("guestCart")) || []
+  // );
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Kiểm tra dữ liệu đầu vào
+    if (
+      !formData.customerName ||
+      !formData.email ||
+      !formData.phoneNumber ||
+      !formData.address
+    ) {
+      alert("Vui lòng điền đầy đủ thông tin cá nhân.");
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      guestOrderDetails,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/api/guest-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        alert("Thanh toán thành công!");
+        // Xóa giỏ hàng sau khi thanh toán thành công
+        localStorage.removeItem("guestCart");
+        window.location.reload();
+      } else {
+        alert("Thanh toán thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi API thanh toán:", error);
+      alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
       try {
@@ -309,7 +388,7 @@ const CartPage = () => {
                     />
                   </td>
                   <button onClick={() => handleDelete(detail.cartDetailId)}>
-                    Xóa 
+                    Xóa
                   </button>
                 </tr>
               ))}
@@ -328,11 +407,55 @@ const CartPage = () => {
             })}
           </h3>
         </div>
-        {selectedItems.length > 0 && (
-          <button className="checkout-button" onClick={handleConfirmPayment}>
-            Thanh toán sản phẩm đã chọn
-          </button>
-        )}
+        {selectedItems.length > 0 &&
+          (isGuest ? (
+            <form onSubmit={handleSubmit}>
+              <label>
+                Họ và tên:{" "}
+                <input
+                  type="text"
+                  name="customerName"
+                  value={formData.customerName}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Email:{" "}
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Số điện thoại:{" "}
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Địa chỉ:{" "}
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <button type="submit">Thanh toán</button>
+            </form>
+          ) : (
+            <button onClick={handleConfirmPayment}>Thanh toán</button>
+          ))}
+
         {showImage && (
           <div className="payment-image">
             <img src={payment} alt="Processing Payment" />

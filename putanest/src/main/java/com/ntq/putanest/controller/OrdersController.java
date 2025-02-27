@@ -32,7 +32,7 @@ public class OrdersController {
         // Tạo đơn hàng mới
         Orders newOrder = new Orders();
         newOrder.setUserId(orderRequest.getUserId());
-        newOrder.setOrderStatus("Đã thanh toán");
+        newOrder.setOrderStatus("Đang chờ xác nhận từ người bán");
         newOrder.setCreatedAt(LocalDateTime.now());
         newOrder.setUpdatedAt(LocalDateTime.now());
         // Tính toán totalAmount
@@ -68,5 +68,19 @@ public class OrdersController {
         }
 
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Orders>> getAllOrders() {
+        List<Orders> orders = ordersService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<String> updateOrderStatus(
+            @PathVariable Integer orderId,
+            @RequestBody String status) {
+        ordersService.updateOrderStatus(orderId, status);
+        return ResponseEntity.ok(status);
     }
 }

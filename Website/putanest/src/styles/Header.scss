@@ -175,16 +175,20 @@
           white-space    : nowrap;
           align-items    : center;
           justify-content: space-between;
+          margin-bottom: 15px;
           font-size      : 20px;
+          color: red;
+          text-decoration-style: double;
         }
 
         .btn {
           background-color: #facc15;
           border          : none;
-          padding         : 0.5rem 1rem;
+          padding         : 15px 20px;
           border-radius   : 0.25rem;
           color           : #1e293b;
           cursor          : pointer;
+          height: 50px;
           transition      : background-color 0.3s;
 
           &:hover {

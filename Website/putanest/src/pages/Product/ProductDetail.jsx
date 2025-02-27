@@ -77,20 +77,63 @@ const ProductDetail = () => {
     setImageModalOpen(false);
   };
 
+  // const handleAddToCart = () => {
+  //   dispatch(
+  //     addCartDetail({
+  //       cartId: cartId,
+  //       productId: selectedProduct.productId,
+  //       productName: selectedProduct.productName,
+  //       price: selectedProduct.price,
+  //       avatar: selectedProduct.avatar,
+  //       quantity,
+  //     })
+  //   );
+  //   toast.success("Sản phẩm đã được thêm vào giỏ hàng!", {
+  //     position: "top-right",
+  //     autoClose: 2000,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     theme: "colored",
+  //   });
+  // };
+
   const handleAddToCart = () => {
-    dispatch(
-      addCartDetail({
-        cartId: cartId,
-        productId: selectedProduct.productId,
-        productName: selectedProduct.productName,
-        price: selectedProduct.price,
-        avatar: selectedProduct.avatar,
-        quantity,
-      })
-    );
+    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+
+    const cartItem = {
+      cartId: cartId,
+      productId: selectedProduct.productId,
+      productName: selectedProduct.productName,
+      price: selectedProduct.price,
+      avatar: selectedProduct.avatar,
+      quantity,
+    };
+
+    if (user) {
+      // Nếu đã đăng nhập, gọi API thông qua Redux action
+      dispatch(addCartDetail(cartItem));
+    } else {
+      // Nếu là guest, lưu vào localStorage
+      const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+      const existingItem = guestCart.find(
+        (item) => item.productId === selectedProduct.productId
+      );
+
+      if (existingItem) {
+        // Cập nhật số lượng nếu sản phẩm đã tồn tại
+        existingItem.quantity += quantity;
+      } else {
+        guestCart.push(cartItem);
+      }
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+    }
+
+    // Hiển thị thông báo
     toast.success("Sản phẩm đã được thêm vào giỏ hàng!", {
       position: "top-right",
-      autoClose: 2000, 
+      autoClose: 2000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,

@@ -187,6 +187,11 @@ const Header = () => {
                       Quản lý danh mục
                     </a>
                   </li>
+                  <li>
+                    <a className="dropdown-item" href="/admin/orders">
+                      Quản lý đơn hàng
+                    </a>
+                  </li>
                 </ul>
               </li>
               )}
@@ -208,7 +213,7 @@ const Header = () => {
           <div className="auth-actions">
             {isLoggedIn ? (
               <>
-                <p className="text">Xin chào, {username}!</p>
+                <p className="text">Chào mừng {username} !</p>
                 <button className="btn" onClick={handleLogout}>
                   Đăng xuất
                 </button>

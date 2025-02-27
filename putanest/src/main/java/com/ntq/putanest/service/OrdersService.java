@@ -9,6 +9,7 @@ public interface OrdersService {
     Optional<Orders> getOrderById(Integer orderId);
     List<Orders> getOrdersByUserId(Integer userId);
     Orders saveOrder(Orders order);
+    public void updateOrderStatus(Integer orderId, String status);
 }
 
 

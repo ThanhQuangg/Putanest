@@ -14,6 +14,7 @@ import AuthComponent from "../pages/User/Auth";
 import CartPage from "../pages/Cart/CartPage";
 import UserOrdersPage from "../pages/Order/OrderPage";
 import ProtectedRoute from "./ProtectedRoute ";
+import AdminOrderManagement from "../pages/Order/AdminOrderManagement";
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute
             element={<AdminCategoryManage />}
+            requiredRole="ROLE_Admin"
+          />
+        }
+      />
+      <Route
+        path="/admin/orders"
+        element={
+          <ProtectedRoute
+            element={<AdminOrderManagement />}
             requiredRole="ROLE_Admin"
           />
         }

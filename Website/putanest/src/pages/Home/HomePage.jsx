@@ -7,6 +7,7 @@ import { fetchProducts } from '../../features/products/productSlice';
 import '../../styles/HomePage.scss';
 import MainLayout from '../../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../pages/Home/Loading';
 import backgroundImage from '../../assets/image/background.jpg';
 import bannerImage from '../../assets/image/banner.jpg'
 import bannerImage1 from '../../assets/image/banner1.png'
@@ -16,6 +17,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products); // Lấy dữ liệu sản phẩm từ store
   const navigate = useNavigate();
+  
   useEffect(() => {
     dispatch(fetchProducts()); // Dispatch action để fetch sản phẩm khi component mount
   }, [dispatch]);
@@ -23,7 +25,8 @@ const HomePage = () => {
   const handleProductClick = (productId) => {
     navigate(`/products/${productId}`);
   };
-  if (loading) return <div>Loading...</div>; // Hiển thị loading khi dữ liệu đang được tải
+  // if (loading) return <div>Dang tải trang web, vui lòng đợi trong giây lát</div>; // Hiển thị loading khi dữ liệu đang được tải
+  if (loading) return <Loading />;
   if (error) return <div>Error: {error}</div>; // Hiển thị lỗi nếu có
 
   const bannerImages = [ bannerImage,bannerImage1,backgroundImage];

@@ -5,6 +5,7 @@ import com.ntq.putanest.repository.OrdersRepository;
 import com.ntq.putanest.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,19 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public Orders saveOrder(Orders order) {
         return ordersRepository.save(order);
+    }
+
+    @Override
+    public void updateOrderStatus(Integer orderId, String status) {
+        // Tìm order theo ID
+        Orders order = ordersRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found with ID: " + orderId));
+
+        // Cập nhật trạng thái
+        order.setOrderStatus(status);
+
+        // Lưu lại thay đổi
+        ordersRepository.save(order);
     }
 }
 
