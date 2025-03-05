@@ -5,9 +5,11 @@ import com.ntq.putanest.dto.OrderDetailRequest;
 import com.ntq.putanest.dto.OrderRequest;
 import com.ntq.putanest.pojo.Orderdetails;
 import com.ntq.putanest.pojo.Orders;
+import com.ntq.putanest.pojo.Products;
 import com.ntq.putanest.service.OrderDetailsService;
 import com.ntq.putanest.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +75,35 @@ public class OrdersController {
     @GetMapping
     public ResponseEntity<List<Orders>> getAllOrders() {
         List<Orders> orders = ordersService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<Orders>> getPaginatedOrders(
+            @RequestParam(defaultValue = "0") int page,  // Trang mặc định là 0
+            @RequestParam(defaultValue = "2") int size // Kích thước mặc định là 10
+    ) {
+        Page<Orders> paginatedOrders = ordersService.getPaginatedOrders(page, size);
+        return ResponseEntity.ok(paginatedOrders);
+    }
+
+    @GetMapping("/paginated-by-user")
+    public ResponseEntity<Page<Orders>> getPaginatedOrdersByUserId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam Integer userId
+    ) {
+        Page<Orders> paginatedOrders = ordersService.getPaginatedOrdersByUserId(page, size, userId);
+        return ResponseEntity.ok(paginatedOrders);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Orders>> searchOrder(
+            @RequestParam(required = false) Integer userId,
+            @RequestParam(required = false) BigDecimal totalAmount,
+            @RequestParam(required = false) String orderStatus,
+            @RequestParam(required = false) LocalDateTime createdAt
+    ) {
+        List<Orders> orders = ordersService.searchOrder(userId, totalAmount, orderStatus, createdAt);
         return ResponseEntity.ok(orders);
     }
 

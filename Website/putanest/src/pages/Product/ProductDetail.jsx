@@ -100,7 +100,7 @@ const ProductDetail = () => {
   // };
 
   const handleAddToCart = () => {
-    const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+    const user = JSON.parse(localStorage.getItem("userId")); // Lấy thông tin user từ localStorage
 
     const cartItem = {
       cartId: cartId,
@@ -114,6 +114,7 @@ const ProductDetail = () => {
     if (user) {
       // Nếu đã đăng nhập, gọi API thông qua Redux action
       dispatch(addCartDetail(cartItem));
+      console.log("API: addCartDetail");
     } else {
       // Nếu là guest, lưu vào localStorage
       const guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
@@ -128,6 +129,7 @@ const ProductDetail = () => {
         guestCart.push(cartItem);
       }
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      console.log("Saved to localStorage as guestCart");
     }
 
     // Hiển thị thông báo

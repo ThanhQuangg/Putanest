@@ -24,8 +24,6 @@ const AppRoutes = () => {
       <Route path="/products/list" element={<ProductList />} />
       <Route path="/products/:id" element={<ProductDetail />} />
       <Route path="/category/:categoryId" element={<CategoryPage />} />
-      {/* <Route path="/admin/products" element={<AdminProductManager />} />
-        <Route path="/admin/categories" element={<AdminCategoryManage />} /> */}
       <Route
         path="/admin/products"
         element={

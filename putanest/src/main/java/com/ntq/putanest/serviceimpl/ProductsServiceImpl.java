@@ -147,11 +147,15 @@ import com.ntq.putanest.repository.ProductsRepository;
 import com.ntq.putanest.service.CloudinaryService;
 import com.ntq.putanest.service.ProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -246,6 +250,17 @@ public class ProductsServiceImpl implements ProductsService {
         } else {
             throw new RuntimeException("Product not found with ID: " + productId);
         }
+    }
+
+    @Override
+    public Page<Products> getPaginatedProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productsRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Products> searchProduct(String productName, String description, BigDecimal price, Integer quantity, Integer categoryId) {
+        return productsRepository.searchProducts(productName, description, price, quantity,categoryId);
     }
 
     @Override

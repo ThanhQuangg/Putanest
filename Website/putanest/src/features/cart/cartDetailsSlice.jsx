@@ -36,6 +36,7 @@ export const fetchCartDetailsByCartId = createAsyncThunk(
 export const addCartDetail = createAsyncThunk(
   "cartDetails/add",
   async (cartDetail) => {
+    console.log("Calling API with data:", cartDetail);
     const response = await createCartDetail(cartDetail);
     return response;
   }

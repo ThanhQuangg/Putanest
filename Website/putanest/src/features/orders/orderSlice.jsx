@@ -3,6 +3,8 @@ import {
   createOrder,
   getOrdersByUserId,
   getAllOrders,
+  getAllOrdersPagination,
+  getAllOrdersPaginationByUserId,
   updateOrderStatus,
 } from "../../utils/API/orderApi";
 
@@ -32,6 +34,24 @@ export const fetchAllOrders = createAsyncThunk(
   }
 );
 
+export const fetchAllOrdersPagination = createAsyncThunk(
+  "orders/fetchPaginated",
+  async ({ page, size }) => {
+    const data = await getAllOrdersPagination(page, size);
+    return data;
+  }
+);
+
+
+
+export const fetchAllOrdersByUserPagination = createAsyncThunk(
+  "orders/fetchAllOrdersByUserPaginations",
+  async (userId) => {
+    const response = await getAllOrdersPaginationByUserId(userId);
+    return response;
+  }
+);
+
 // Async thunk để cập nhật trạng thái đơn hàng
 export const updateOrderStatusThunk = createAsyncThunk(
   'orders/updateStatus',
@@ -49,7 +69,7 @@ const ordersSlice = createSlice({
   name: "orders",
   initialState: {
     orders: [],
-    // order: null,
+    totalPages: 0,
     status: "idle",
     error: null,
   },
@@ -106,6 +126,9 @@ const ordersSlice = createSlice({
       .addCase(updateOrderStatusThunk.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      .addCase(fetchAllOrdersPagination.fulfilled, (state, action) => {
+        state.paginatedBuses = action.payload;
       });
   },
 });

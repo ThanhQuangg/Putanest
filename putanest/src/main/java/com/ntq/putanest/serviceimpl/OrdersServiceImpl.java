@@ -1,11 +1,17 @@
 package com.ntq.putanest.serviceimpl;
 
 import com.ntq.putanest.pojo.Orders;
+import com.ntq.putanest.pojo.Products;
 import com.ntq.putanest.repository.OrdersRepository;
 import com.ntq.putanest.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +34,23 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public List<Orders> getOrdersByUserId(Integer userId) {
         return ordersRepository.findByUserId(userId);
+    }
+
+    @Override
+    public Page<Orders> getPaginatedOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ordersRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Orders> getPaginatedOrdersByUserId(int page, int size, Integer userId) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ordersRepository.findByUserId(userId, pageable);
+    }
+
+    @Override
+    public List<Orders> searchOrder(Integer userId, BigDecimal totalAmount, String orderStatus, LocalDateTime createdAt) {
+        return ordersRepository.searchOrders(userId, totalAmount, orderStatus, createdAt);
     }
 
     @Override
