@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = 'http://localhost:8080/api/categories';
-// const BASE_URL = 'https://putanest-h9ou.onrender.com/api/categories';
+// const BASE_URL = 'http://localhost:8080/api/categories';
+const BASE_URL = 'https://putanest-h9ou.onrender.com/api/categories';
 
 export const getAllCategories = async () => {
     const response = await axios.get(BASE_URL);

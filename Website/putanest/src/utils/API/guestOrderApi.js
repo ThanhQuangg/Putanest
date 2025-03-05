@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // Cấu hình cơ bản cho Axios
 const guestOrderApi = axios.create({
-  baseURL: 'http://localhost:8080/api/guest-orders',
-  // baseURL: 'https://putanest-h9ou.onrender.com/api/guest-orders',
+  // baseURL: 'http://localhost:8080/api/guest-orders',
+  baseURL: 'https://putanest-h9ou.onrender.com/api/guest-orders',
   headers: {
     'Content-Type': 'application/json',
   },
