@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { URL } from './config';
+
+const BASE_URL = `${URL}/api/users`;
 
 // const BASE_URL = 'http://localhost:8080/api/users';
-const BASE_URL = 'https://putanest-h9ou.onrender.com/api/users';
+// const BASE_URL = 'https://putanest-h9ou.onrender.com/api/users';
 
 export const getAllUsers = async () => {
     const response = await axios.get(BASE_URL);

@@ -5,6 +5,7 @@ import com.ntq.putanest.pojo.Products;
 import com.ntq.putanest.service.ProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,17 +78,48 @@ public class ProductsController {
         return ResponseEntity.ok(products);
     }
 
-    @PostMapping
-    public ResponseEntity<ProductsDTO> createProduct(@RequestPart("product") ProductsDTO productsDTO,
-                                                     @RequestPart(value = "avatar", required = false) MultipartFile avatar) throws IOException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductsDTO> createProduct(
+            @RequestParam("productName") String productName,
+            @RequestParam("categoryId") Integer categoryId,
+            @RequestParam("description") String description,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar) throws IOException {
+
+        // Tạo ProductsDTO từ các tham số nhận được
+        ProductsDTO productsDTO = new ProductsDTO();
+        productsDTO.setProductName(productName);
+        productsDTO.setCategoryId(categoryId);
+        productsDTO.setDescription(description);
+        productsDTO.setPrice(price);
+        productsDTO.setQuantity(quantity);
+
+        // Gọi service để tạo sản phẩm
         ProductsDTO createdProduct = productsService.createProduct(productsDTO, avatar);
         return ResponseEntity.ok(createdProduct);
     }
 
-    @PutMapping("/{productId}")
-    public ResponseEntity<ProductsDTO> updateProduct(@PathVariable Integer productId,
-                                                     @RequestPart("product") ProductsDTO productsDTO,
-                                                     @RequestPart(value = "avatar", required = false) MultipartFile avatar) throws IOException {
+    @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductsDTO> updateProduct(
+            @PathVariable Integer productId,
+            @RequestParam("productName") String productName,
+            @RequestParam("categoryId") Integer categoryId,
+            @RequestParam("description") String description,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar) throws IOException {
+
+        // Tạo ProductsDTO từ các tham số nhận được
+        ProductsDTO productsDTO = new ProductsDTO();
+        productsDTO.setProductId(productId); // Có thể không cần nếu productId đã được lấy từ PathVariable
+        productsDTO.setProductName(productName);
+        productsDTO.setCategoryId(categoryId);
+        productsDTO.setDescription(description);
+        productsDTO.setPrice(price);
+        productsDTO.setQuantity(quantity);
+
+        // Gọi service để cập nhật sản phẩm
         ProductsDTO updatedProduct = productsService.updateProduct(productId, productsDTO, avatar);
         return ResponseEntity.ok(updatedProduct);
     }

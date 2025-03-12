@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class UserActionDTO {
     private Long id;
+    private Long userId;
     private String actionType;
     private Long productId;
     private Integer quantity;
@@ -47,5 +48,13 @@ public class UserActionDTO {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

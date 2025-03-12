@@ -22,18 +22,26 @@ export const fetchProductDetail = createAsyncThunk(
 // Thunk để tạo sản phẩm mới
 export const createProduct = createAsyncThunk(
     'products/createProduct',
-    async (product) => {
-        const response = await apiCreateProduct(product);
-        return response;
+    async (formData, { rejectWithValue }) => {
+        try {
+            const response = await apiCreateProduct(formData);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
     }
 );
 
 // Thunk để cập nhật sản phẩm
 export const updateProduct = createAsyncThunk(
     'products/updateProduct',
-    async ({ id, product }) => {
-        const response = await apiUpdateProduct(id, product);
-        return response;
+    async ({ id, formData }, { rejectWithValue }) => {
+        try {
+            const response = await apiUpdateProduct(id, formData);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
     }
 );
 

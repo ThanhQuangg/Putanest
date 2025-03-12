@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import MainLayout from '../../layouts/MainLayout';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import MainLayout from "../../layouts/MainLayout";
 import {
   fetchProducts,
   fetchCategories,
   createProduct,
   updateProduct,
   deleteProduct,
-} from '../../features/products/productSlice';
-import '../../styles/AdminProductManage.scss';
+} from "../../features/products/productSlice";
+import "../../styles/AdminProductManage.scss";
 
 const AdminProductManagement = () => {
   const dispatch = useDispatch();
-  const { products, categories, loading } = useSelector((state) => state.products);
+  const { products, categories, loading } = useSelector(
+    (state) => state.products
+  );
 
   const [form, setForm] = useState({
-    productName: '',
-    categoryId: '',
-    price: '',
-    quantity: '',
-    description: '',
+    productName: "",
+    categoryId: "",
+    price: "",
+    quantity: "",
+    description: "",
     avatar: null,
   });
 
@@ -42,26 +44,23 @@ const AdminProductManagement = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
-    formData.append('product', new Blob([JSON.stringify({
-      productName: form.productName,
-      categoryId: form.categoryId,
-      price: form.price,
-      quantity: form.quantity,
-      description: form.description,
-    })], { type: "application/json" }));
-  
+    formData.append("productName", form.productName);
+    formData.append("categoryId", form.categoryId);
+    formData.append("price", form.price); // Gửi chuỗi, backend sẽ chuyển thành BigDecimal
+    formData.append("quantity", form.quantity); // Gửi chuỗi, backend sẽ chuyển thành Integer
+    formData.append("description", form.description);
     if (form.avatar) {
-      formData.append('avatar', form.avatar);
+      formData.append("avatar", form.avatar);
     }
-  
+
     if (isEditing) {
-      dispatch(updateProduct({ id: currentProductId, product: formData }));
+      dispatch(updateProduct({ id: currentProductId, formData }));
     } else {
       dispatch(createProduct(formData));
     }
-  
+
     resetForm();
   };
 
@@ -79,21 +78,19 @@ const AdminProductManagement = () => {
 
   const resetForm = () => {
     setForm({
-      productName: '',
-      categoryId: '',
-      price: '',
-      quantity: '',
-      description: '',
+      productName: "",
+      categoryId: "",
+      price: "",
+      quantity: "",
+      description: "",
       avatar: null,
     });
     setIsEditing(false);
     setCurrentProductId(null);
   };
 
-  
-
   const handleDelete = (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
       dispatch(deleteProduct(id));
     }
   };
@@ -153,7 +150,9 @@ const AdminProductManagement = () => {
           />
 
           <input type="file" name="avatar" onChange={handleFileChange} />
-          <button type="submit">{isEditing ? 'Cập nhật' : 'Thêm sản phẩm'}</button>
+          <button type="submit">
+            {isEditing ? "Cập nhật" : "Thêm sản phẩm"}
+          </button>
         </form>
 
         {loading ? (
@@ -175,15 +174,22 @@ const AdminProductManagement = () => {
                 <tr key={product.productId}>
                   <td>{product.productId}</td>
                   <td>{product.productName}</td>
-                  <td>{product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                  <td>
+                    {product.price.toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
+                  </td>
                   <td>{product.quantity}</td>
-                  <td>{
-                    categories.find((c) => c.categoryId === product.categoryId)?.categoryName ||
-                    'Không xác định'
-                  }</td>
+                  <td>
+                    {categories.find((c) => c.categoryId === product.categoryId)
+                      ?.categoryName || "Không xác định"}
+                  </td>
                   <td>
                     <button onClick={() => handleEdit(product)}>Sửa</button>
-                    <button onClick={() => handleDelete(product.productId)}>Xóa</button>
+                    <button onClick={() => handleDelete(product.productId)}>
+                      Xóa
+                    </button>
                   </td>
                 </tr>
               ))}

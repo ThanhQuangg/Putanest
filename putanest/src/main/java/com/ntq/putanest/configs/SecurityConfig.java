@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -55,9 +56,9 @@ public class SecurityConfig {
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/categories","/api/products").hasAnyRole(("Admin"))
-                        .requestMatchers(HttpMethod.PUT, "/api/categories","/api/products").hasAnyRole(("Admin"))
-                        .requestMatchers(HttpMethod.DELETE,"/api/categories", "/api/products").hasAnyRole(("Admin"))
+                        .requestMatchers(HttpMethod.POST, "/api/categories","/api/products").hasAnyAuthority(("ROLE_Admin"))
+                        .requestMatchers(HttpMethod.PUT, "/api/categories","/api/products").hasAnyAuthority(("ROLE_Admin"))
+                        .requestMatchers(HttpMethod.DELETE,"/api/categories", "/api/products").hasAnyAuthority(("ROLE_Admin"))
                         .requestMatchers(HttpMethod.GET, "/api/carts/*","api/cartdetails/cart/").authenticated()
                         .anyRequest().permitAll() // Các request khác phải có token hợp lệ
 
@@ -92,6 +93,11 @@ public class SecurityConfig {
                     .allowedOrigins("http://localhost:5173")
                     .allowedMethods("GET", "POST", "PUT", "DELETE");
         }
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }
 

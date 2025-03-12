@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { URL } from './config';
 
+const BASE_URL = `${URL}/api/carts`;
 // const BASE_URL = 'http://localhost:8080/api/carts';
-const BASE_URL = 'https://putanest-h9ou.onrender.com/api/carts';
+// const BASE_URL = 'https://putanest-h9ou.onrender.com/api/carts';
 
 
 // Lấy tất cả giỏ hàng
